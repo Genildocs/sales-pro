@@ -1,176 +1,167 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="form-container">
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="nome">Nome</label>
-        <InputText
-          id="nome"
-          v-model="formData.nome"
-          required
-          placeholder="Digite o nome completo"
-          class="w-full"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="cpf">CPF</label>
-        <InputMask
-          id="cpf"
-          v-model="formData.cpf"
-          mask="999.999.999-99"
-          required
-          placeholder="000.000.000-00"
-          class="w-full"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="telefone">Telefone</label>
-        <InputMask
-          id="telefone"
-          v-model="formData.telefone"
-          mask="(99) 99999-9999"
-          required
-          placeholder="(00) 00000-0000"
-          class="w-full"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="endereco">Endereço</label>
-        <InputText
-          id="endereco"
-          v-model="formData.endereco"
-          required
-          placeholder="Digite o endereço"
-          class="w-full"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="numero">Número</label>
-        <InputText
-          id="numero"
-          v-model="formData.numero"
-          required
-          placeholder="Número da residência"
-          class="w-full"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="bairro">Bairro</label>
-        <InputText
-          id="bairro"
-          v-model="formData.bairro"
-          required
-          placeholder="Digite o bairro"
-          class="w-full"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="cidade">Cidade</label>
-        <InputText
-          id="cidade"
-          v-model="formData.cidade"
-          required
-          placeholder="Digite a cidade"
-          class="w-full"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="cep">CEP</label>
-        <InputMask
-          id="cep"
-          v-model="formData.cep"
-          mask="99999-999"
-          required
-          placeholder="00000-000"
-          class="w-full"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="data">Data</label>
-        <Calendar
-          id="data"
-          v-model="formData.data"
-          required
-          dateFormat="dd/mm/yy"
-          showIcon
-          class="w-full"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="tipo">Tipo</label>
-        <div class="checkbox-group">
-          <Checkbox
-            v-model="formData.tipo"
-            value="BUDGET"
-            inputId="budget"
-            :binary="false"
-          />
-          <label for="budget" class="ml-2">Orçamento</label>
-
-          <Checkbox
-            v-model="formData.tipo"
-            value="ORDER"
-            inputId="order"
-            :binary="false"
-            class="ml-4"
-          />
-          <label for="order" class="ml-2">Pedido</label>
-        </div>
-      </div>
-    </div>
-
+  <div class="form-wrapper">
     <ItemForm v-model="formData.itens" />
+    <form @submit.prevent="handleSubmit" class="form-container">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nome">Nome</label>
+          <InputText
+            id="nome"
+            v-model="formData.nome"
+            required
+            placeholder="Digite o nome completo"
+            class="w-full" />
+        </div>
 
-    <div class="form-actions">
-      <div class="vendedor-info" v-if="vendedorNome">
-        <span class="vendedor-label">Vendedor:</span>
-        <span class="vendedor-nome">{{ vendedorNome }}</span>
-      </div>
-      <div class="action-buttons">
-        <Button
-          type="submit"
-          label="Registrar"
-          icon="pi pi-check"
-          :loading="isSubmitting"
-          class="p-button-success"
-        />
-        <div class="send-document-buttons" v-if="vendedorNome">
-          <Button
-            label="Enviar por WhatsApp"
-            icon="pi pi-whatsapp"
-            class="p-button-help"
-            @click="enviarWhatsApp"
-            :loading="isEnviandoWhatsApp"
-          />
-          <Button
-            label="Enviar por E-mail"
-            icon="pi pi-envelope"
-            class="p-button-info"
-            @click="enviarEmail"
-            :loading="isEnviandoEmail"
-          />
+        <div class="form-group">
+          <label for="cpf">CPF</label>
+          <InputMask
+            id="cpf"
+            v-model="formData.cpf"
+            mask="999.999.999-99"
+            required
+            placeholder="000.000.000-00"
+            class="w-full" />
+        </div>
+
+        <div class="form-group">
+          <label for="telefone">Telefone</label>
+          <InputMask
+            id="telefone"
+            v-model="formData.telefone"
+            mask="(99) 99999-9999"
+            required
+            placeholder="(00) 00000-0000"
+            class="w-full" />
+        </div>
+
+        <div class="form-group">
+          <label for="endereco">Endereço</label>
+          <InputText
+            id="endereco"
+            v-model="formData.endereco"
+            required
+            placeholder="Digite o endereço"
+            class="w-full" />
+        </div>
+
+        <div class="form-group">
+          <label for="numero">Número</label>
+          <InputText
+            id="numero"
+            v-model="formData.numero"
+            required
+            placeholder="Número da residência"
+            class="w-full" />
+        </div>
+
+        <div class="form-group">
+          <label for="bairro">Bairro</label>
+          <InputText
+            id="bairro"
+            v-model="formData.bairro"
+            required
+            placeholder="Digite o bairro"
+            class="w-full" />
+        </div>
+
+        <div class="form-group">
+          <label for="cidade">Cidade</label>
+          <InputText
+            id="cidade"
+            v-model="formData.cidade"
+            required
+            placeholder="Digite a cidade"
+            class="w-full" />
+        </div>
+
+        <div class="form-group">
+          <label for="cep">CEP</label>
+          <InputMask
+            id="cep"
+            v-model="formData.cep"
+            mask="99999-999"
+            required
+            placeholder="00000-000"
+            class="w-full" />
+        </div>
+
+        <div class="form-group">
+          <label for="data">Data</label>
+          <Calendar
+            id="data"
+            v-model="formData.data"
+            required
+            dateFormat="dd/mm/yy"
+            showIcon
+            class="w-full"
+            :disabled="true" />
+        </div>
+
+        <div class="form-group">
+          <label for="tipo">Tipo</label>
+          <div class="checkbox-group">
+            <Checkbox
+              v-model="formData.tipo"
+              value="BUDGET"
+              inputId="budget"
+              :binary="false" />
+            <label for="budget" class="ml-2">Orçamento</label>
+
+            <Checkbox
+              v-model="formData.tipo"
+              value="ORDER"
+              inputId="order"
+              :binary="false"
+              class="ml-4" />
+            <label for="order" class="ml-2">Pedido</label>
+          </div>
         </div>
       </div>
-    </div>
-  </form>
+
+      <div class="form-actions">
+        <div class="vendedor-info" v-if="vendedorNome">
+          <span class="vendedor-label">Vendedor:</span>
+          <span class="vendedor-nome">{{ vendedorNome }}</span>
+        </div>
+        <div class="action-buttons">
+          <Button
+            type="submit"
+            label="Registrar"
+            icon="pi pi-check"
+            :loading="isSubmitting"
+            class="p-button-success" />
+          <div class="send-document-buttons" v-if="vendedorNome">
+            <Button
+              label="Enviar por WhatsApp"
+              icon="pi pi-whatsapp"
+              class="p-button-help"
+              @click="enviarWhatsApp"
+              :loading="isEnviandoWhatsApp"
+              type="button" />
+            <Button
+              label="Enviar por E-mail"
+              icon="pi pi-envelope"
+              class="p-button-info"
+              @click="enviarEmail"
+              :loading="isEnviandoEmail"
+              type="button" />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script setup>
-import Button from 'primevue/button'
-import Calendar from 'primevue/calendar'
-import Checkbox from 'primevue/checkbox'
-import InputMask from 'primevue/inputmask'
-import InputText from 'primevue/inputtext'
-import { onMounted, ref } from 'vue'
-import ItemForm from './ItemForm.vue'
+import { generateSalePDF } from '@/services/pdfService';
+import Button from 'primevue/button';
+import Calendar from 'primevue/calendar';
+import Checkbox from 'primevue/checkbox';
+import InputMask from 'primevue/inputmask';
+import InputText from 'primevue/inputtext';
+import { onMounted, ref } from 'vue';
+import ItemForm from './ItemForm.vue';
 
 const formData = ref({
   nome: '',
@@ -183,71 +174,91 @@ const formData = ref({
   cep: '',
   data: '',
   tipo: [],
-  itens: []
-})
+  itens: [],
+});
 
-const isSubmitting = ref(false)
-const isEnviandoWhatsApp = ref(false)
-const isEnviandoEmail = ref(false)
-const vendedorNome = ref('')
+const isSubmitting = ref(false);
+const isEnviandoWhatsApp = ref(false);
+const isEnviandoEmail = ref(false);
+const vendedorNome = ref('');
 
 const handleSubmit = async () => {
-  isSubmitting.value = true
+  if (formData.value.itens.length === 0) {
+    alert('Adicione pelo menos um item antes de registrar.');
+    return;
+  }
+
+  isSubmitting.value = true;
   try {
+    // Calcula os subtotais antes de enviar
+    formData.value.itens.forEach((item) => {
+      item.subtotal = item.quantidade * item.unitario;
+    });
+
     // Simulando chamada à API
-    const response = await new Promise(resolve => {
+    const response = await new Promise((resolve) => {
       setTimeout(() => {
         resolve({
           vendedor: {
-            nome: 'João Silva'
-          }
-        })
-      }, 2000)
-    })
-    
-    vendedorNome.value = response.vendedor.nome
-    console.log('Dados do formulário:', formData.value)
+            nome: 'João Silva',
+          },
+        });
+      }, 2000);
+    });
+
+    vendedorNome.value = response.vendedor.nome;
+
+    // Gera o PDF apenas após a resposta da API
+    generateSalePDF(formData.value);
+
+    console.log('Dados do formulário:', formData.value);
   } catch (error) {
-    console.error('Erro ao enviar formulário:', error)
+    console.error('Erro ao enviar formulário:', error);
   } finally {
-    isSubmitting.value = false
+    isSubmitting.value = false;
   }
-}
+};
 
 const enviarWhatsApp = async () => {
-  isEnviandoWhatsApp.value = true
+  isEnviandoWhatsApp.value = true;
   try {
     // Simulando envio por WhatsApp
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    console.log('Documento enviado por WhatsApp')
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    console.log('Documento enviado por WhatsApp');
   } catch (error) {
-    console.error('Erro ao enviar por WhatsApp:', error)
+    console.error('Erro ao enviar por WhatsApp:', error);
   } finally {
-    isEnviandoWhatsApp.value = false
+    isEnviandoWhatsApp.value = false;
   }
-}
+};
 
 const enviarEmail = async () => {
-  isEnviandoEmail.value = true
+  isEnviandoEmail.value = true;
   try {
     // Simulando envio por E-mail
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    console.log('Documento enviado por E-mail')
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    console.log('Documento enviado por E-mail');
   } catch (error) {
-    console.error('Erro ao enviar por E-mail:', error)
+    console.error('Erro ao enviar por E-mail:', error);
   } finally {
-    isEnviandoEmail.value = false
+    isEnviandoEmail.value = false;
   }
-}
+};
 
 onMounted(() => {
   // Inicializa a data atual
-  const today = new Date()
-  formData.value.data = today
-})
+  const today = new Date();
+  formData.value.data = today;
+});
 </script>
 
 <style scoped>
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 .form-container {
   background-color: var(--surface-card);
   padding: 2rem;
@@ -364,7 +375,6 @@ label {
 }
 
 :deep(.p-button) {
-  padding: 0.75rem 1.5rem;
   font-size: 1rem;
   font-weight: 500;
   border-radius: 6px;
@@ -454,4 +464,4 @@ label {
     width: 100%;
   }
 }
-</style> 
+</style>

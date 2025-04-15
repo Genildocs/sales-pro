@@ -14,10 +14,6 @@
         <router-link to="/sales-registration" class="nav-item">Registro de Vendas</router-link>
         <router-link to="/open-sales" class="nav-item">Vendas Abertas</router-link>
         <router-link to="/list-overview" class="nav-item">Relatórios</router-link>
-        <router-link to="/sales-list" class="nav-item">
-          <i class="pi pi-list"></i>
-          Lista de Vendas
-        </router-link>
       </div>
     </nav>
 
