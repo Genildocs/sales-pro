@@ -1,0 +1,28 @@
+
+@layer tailwind-base, primevue, tailwind-utilities;
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    @apply cursor-pointer;
+  }
+
+  body {
+    @apply font-nunito;
+  }
+}
+
+@layer utilities {
+  .icon-avatar {
+    @apply flex justify-center items-center w-12 h-12  text-center rounded-full object-cover text-[20px] bg-blue-500;
+  }
+}
