@@ -95,7 +95,7 @@
             dateFormat="dd/mm/yy"
             showIcon
             class="w-full"
-            :disabled="true" />
+            :disabled="false" />
         </div>
 
         <div class="form-group">
@@ -126,11 +126,12 @@
         </div>
         <div class="action-buttons">
           <Button
-            type="submit"
+            type="button"
             label="Registrar"
             icon="pi pi-check"
             :loading="isSubmitting"
-            class="p-button-success" />
+            class="p-button-success"
+            @click="handleSubmit" />
           <div class="send-document-buttons" v-if="vendedorNome">
             <Button
               label="Enviar por WhatsApp"
@@ -155,14 +156,17 @@
 
 <script setup>
 import { generateSalePDF } from '@/services/pdfService';
+import saleService from '@/services/saleService';
 import Button from 'primevue/button';
 import Calendar from 'primevue/calendar';
 import Checkbox from 'primevue/checkbox';
 import InputMask from 'primevue/inputmask';
 import InputText from 'primevue/inputtext';
+import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
 import ItemForm from './ItemForm.vue';
 
+const toast = useToast();
 const formData = ref({
   nome: '',
   cpf: '',
@@ -182,38 +186,124 @@ const isEnviandoWhatsApp = ref(false);
 const isEnviandoEmail = ref(false);
 const vendedorNome = ref('');
 
+const validarFormulario = () => {
+  if (!formData.value.nome.trim()) {
+    toast.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: 'Nome é obrigatório',
+      life: 3000,
+    });
+    return false;
+  }
+  if (!formData.value.cpf.replace(/[^\d]/g, '')) {
+    toast.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: 'CPF é obrigatório',
+      life: 3000,
+    });
+    return false;
+  }
+  if (!formData.value.telefone.replace(/[^\d]/g, '')) {
+    toast.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: 'Telefone é obrigatório',
+      life: 3000,
+    });
+    return false;
+  }
+  if (!formData.value.tipo.length) {
+    toast.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: 'Selecione o tipo (Orçamento ou Pedido)',
+      life: 3000,
+    });
+    return false;
+  }
+  return true;
+};
+
+const limparFormulario = () => {
+  formData.value = {
+    nome: '',
+    cpf: '',
+    telefone: '',
+    endereco: '',
+    numero: '',
+    bairro: '',
+    cidade: '',
+    cep: '',
+    data: new Date(),
+    tipo: [],
+    itens: [],
+  };
+  vendedorNome.value = '';
+};
+
 const handleSubmit = async () => {
   if (formData.value.itens.length === 0) {
-    alert('Adicione pelo menos um item antes de registrar.');
+    toast.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: 'Adicione pelo menos um item antes de registrar',
+      life: 3000,
+    });
+    return;
+  }
+
+  if (!validarFormulario()) {
     return;
   }
 
   isSubmitting.value = true;
   try {
-    // Calcula os subtotais antes de enviar
     formData.value.itens.forEach((item) => {
       item.subtotal = item.quantidade * item.unitario;
     });
 
-    // Simulando chamada à API
-    const response = await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          vendedor: {
-            nome: 'João Silva',
-          },
-        });
-      }, 2000);
-    });
+    const vendaData = {
+      client: {
+        nome: formData.value.nome,
+        cpf: formData.value.cpf,
+        telefone: formData.value.telefone,
+        endereco: formData.value.endereco,
+        numero: formData.value.numero,
+        bairro: formData.value.bairro,
+        cidade: formData.value.cidade,
+        cep: formData.value.cep,
+      },
+      items: formData.value.itens,
+      tipo: formData.value.tipo[0] === 'BUDGET' ? 'ORÇAMENTO' : 'PEDIDO',
+      data: formData.value.data,
+    };
 
+    const response = await saleService.createSale(vendaData);
     vendedorNome.value = response.vendedor.nome;
 
-    // Gera o PDF apenas após a resposta da API
     generateSalePDF(formData.value);
 
-    console.log('Dados do formulário:', formData.value);
+    toast.add({
+      severity: 'success',
+      summary: 'Sucesso',
+      detail: 'Venda registrada com sucesso!',
+      life: 3000,
+    });
+
+    // Limpa o formulário após 3 segundos
+    setTimeout(() => {
+      limparFormulario();
+    }, 3000);
   } catch (error) {
-    console.error('Erro ao enviar formulário:', error);
+    console.error('Erro ao registrar venda:', error);
+    toast.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: 'Erro ao registrar venda. Por favor, tente novamente.',
+      life: 3000,
+    });
   } finally {
     isSubmitting.value = false;
   }
@@ -222,11 +312,21 @@ const handleSubmit = async () => {
 const enviarWhatsApp = async () => {
   isEnviandoWhatsApp.value = true;
   try {
-    // Simulando envio por WhatsApp
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log('Documento enviado por WhatsApp');
+    toast.add({
+      severity: 'success',
+      summary: 'Sucesso',
+      detail: 'Documento enviado por WhatsApp',
+      life: 3000,
+    });
   } catch (error) {
     console.error('Erro ao enviar por WhatsApp:', error);
+    toast.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: 'Erro ao enviar por WhatsApp',
+      life: 3000,
+    });
   } finally {
     isEnviandoWhatsApp.value = false;
   }
@@ -235,20 +335,28 @@ const enviarWhatsApp = async () => {
 const enviarEmail = async () => {
   isEnviandoEmail.value = true;
   try {
-    // Simulando envio por E-mail
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log('Documento enviado por E-mail');
+    toast.add({
+      severity: 'success',
+      summary: 'Sucesso',
+      detail: 'Documento enviado por E-mail',
+      life: 3000,
+    });
   } catch (error) {
     console.error('Erro ao enviar por E-mail:', error);
+    toast.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: 'Erro ao enviar por E-mail',
+      life: 3000,
+    });
   } finally {
     isEnviandoEmail.value = false;
   }
 };
 
 onMounted(() => {
-  // Inicializa a data atual
-  const today = new Date();
-  formData.value.data = today;
+  formData.value.data = new Date();
 });
 </script>
 

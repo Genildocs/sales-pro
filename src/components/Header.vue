@@ -1,26 +1,32 @@
 <template>
-  <header class="main-header">
+  <header class="main-header" v-if="isAuthenticated">
     <div class="logo">
       <h1>SalesPro</h1>
     </div>
-    
+
     <nav class="main-nav">
       <button class="menu-toggle" @click="toggleMenu">
         <Menu class="hamburger-icon" />
       </button>
-      
-      <div class="nav-links" :class="{ 'show': isMenuOpen }">
-        <router-link to="/" class="nav-item">Dashboard</router-link>
-        <router-link to="/sales-registration" class="nav-item">Registro de Vendas</router-link>
-        <router-link to="/open-sales" class="nav-item">Vendas Abertas</router-link>
-        <router-link to="/list-overview" class="nav-item">Relatórios</router-link>
+
+      <div class="nav-links" :class="{ show: isMenuOpen }">
+        <router-link to="/home" class="nav-item">Dashboard</router-link>
+        <router-link to="/sales-registration" class="nav-item"
+          >Registro de Vendas</router-link
+        >
+        <router-link to="/open-sales" class="nav-item"
+          >Vendas Abertas</router-link
+        >
+        <router-link to="/list-overview" class="nav-item"
+          >Relatórios</router-link
+        >
       </div>
     </nav>
 
     <div class="user-info" @click="toggleUserMenu">
       <span class="user-avatar">{{ userInitials }}</span>
       <span class="user-name" v-if="userName">{{ userName }}</span>
-      
+
       <div class="user-menu" v-if="isUserMenuOpen">
         <router-link to="/profile" class="menu-item">
           <User class="icon" />
@@ -40,40 +46,50 @@
 </template>
 
 <script setup>
-import { LogOut, Menu, Settings, User } from 'lucide-vue-next'
-import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import authService from '@/services/authService';
+import { LogOut, Menu, Settings, User } from 'lucide-vue-next';
+import { useToast } from 'primevue/usetoast';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-const router = useRouter()
-const isMenuOpen = ref(false)
-const isUserMenuOpen = ref(false)
+const router = useRouter();
+const toast = useToast();
+const isMenuOpen = ref(false);
+const isUserMenuOpen = ref(false);
+
+const isAuthenticated = computed(() => authService.isAuthenticated());
 
 // Dados do usuário (serão substituídos pela API)
-const userName = ref('')
+const userName = ref('');
 const userInitials = computed(() => {
   if (userName.value) {
     return userName.value
       .split(' ')
-      .map(n => n[0])
+      .map((n) => n[0])
       .join('')
-      .toUpperCase()
+      .toUpperCase();
   }
-  return 'AG'
-})
+  return 'AG';
+});
 
 const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value
-}
+  isMenuOpen.value = !isMenuOpen.value;
+};
 
 const toggleUserMenu = () => {
-  isUserMenuOpen.value = !isUserMenuOpen.value
-}
+  isUserMenuOpen.value = !isUserMenuOpen.value;
+};
 
 const handleLogout = () => {
-  // Implementar lógica de logout
-  console.log('Logout')
-  router.push('/')
-}
+  authService.logout();
+  toast.add({
+    severity: 'success',
+    summary: 'Sucesso',
+    detail: 'Logout realizado com sucesso!',
+    life: 3000,
+  });
+  router.push('/');
+};
 </script>
 
 <style scoped>
@@ -232,4 +248,4 @@ const handleLogout = () => {
     display: none;
   }
 }
-</style> 
+</style>
