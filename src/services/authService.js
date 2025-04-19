@@ -1,3 +1,9 @@
+/**
+ * Serviço de autenticação
+ * @module authService
+ * @description Gerencia a autenticação do usuário, incluindo login, logout e verificação de estado
+ */
+
 import axios from 'axios';
 
 const API_URL = 'https://salespro-bsfy.onrender.com';

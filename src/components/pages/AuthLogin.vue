@@ -1,3 +1,5 @@
+/** * Componente de Login * @component * @description Componente responsável
+pela autenticação de usuários no sistema */
 <template>
   <div class="auth-container">
     <div class="auth-content">
@@ -57,21 +59,42 @@ const router = useRouter();
 const toast = useToast();
 const isLoading = ref(false);
 
+/**
+ * Dados do formulário de login
+ * @type {Object}
+ * @property {string} email - E-mail do usuário
+ * @property {string} password - Senha do usuário
+ */
 const formData = ref({
   email: '',
   password: '',
 });
 
+/**
+ * Objeto contendo mensagens de erro de validação
+ * @type {Object}
+ * @property {string} email - Mensagem de erro do campo e-mail
+ * @property {string} password - Mensagem de erro do campo senha
+ */
 const errors = ref({
   email: '',
   password: '',
 });
 
+/**
+ * Valida o formato do e-mail
+ * @param {string} email - E-mail a ser validado
+ * @returns {boolean} true se o e-mail for válido, false caso contrário
+ */
 const validateEmail = (email) => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(email);
 };
 
+/**
+ * Valida os campos do formulário
+ * @returns {boolean} true se o formulário for válido, false caso contrário
+ */
 const validateForm = () => {
   let isValid = true;
   errors.value = {
@@ -98,6 +121,12 @@ const validateForm = () => {
   return isValid;
 };
 
+/**
+ * Manipula o processo de login
+ * @async
+ * @function handleLogin
+ * @throws {Error} Erro retornado pela API de autenticação
+ */
 const handleLogin = async () => {
   if (!validateForm()) {
     toast.add({
